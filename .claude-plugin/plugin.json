@@ -25,5 +25,10 @@
       "required": false,
       "default": ""
     }
-  }
+  },
+  "icon": "./assets/logo.svg",
+  "documentationUrl": "https://github.com/seanebones-lang/deadbolt-claude-plugin#readme",
+  "supportUrl": "https://github.com/seanebones-lang/deadbolt-claude-plugin/issues",
+  "privacyPolicyUrl": "https://github.com/seanebones-lang/deadbolt-claude-plugin/blob/main/PRIVACY.md",
+  "termsOfServiceUrl": "https://github.com/seanebones-lang/deadbolt-claude-plugin/blob/main/LICENSE"
 }

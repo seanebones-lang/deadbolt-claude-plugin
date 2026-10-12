@@ -5,7 +5,8 @@
 
 This plugin includes the exact released **MCP bundle 1.1.0**, containing stable
 **engine 1.0.3**. Plugin version **1.0.0** is a separate packaging version.
-It needs Node.js 20+ on PATH. macOS Apple Silicon/Intel, Linux x64 with glibc,
+It needs Node.js 20+ on PATH. Use current Claude Code; directory manifest fields
+validate without warnings on Claude Code 2.1.281+ (CI pins 2.1.296). macOS Apple Silicon/Intel, Linux x64 with glibc,
 and Windows x64 are included. It requires no Rust build, API key or hosted gate.
 
 ## Start with read-only setup
@@ -17,15 +18,45 @@ Leave `DEADBOLT_OPERATOR_CONFIG` blank. Claude Code discovers:
 - `deadbolt_check_bundle`: hashes this host's packaged engine and reports the
   packaging versions, compatibility and scope.
 
+Try these requests in a Claude Code session with the setup plugin enabled:
+
+1. “Verify the local DeadBolt bundle and tell me whether protection is active.”
+2. “Get the DeadBolt stdio integration guide and explain what is outside its boundary.”
+3. “Show the DeadBolt guide for embedding the Rust crate in an application.”
+
+These requests use read-only setup tools. They do not configure a server or grant
+an action. The acceptance suite calls both tools and all four guide routes.
+
 **Setup mode provides no active protection.** It starts no downstream server,
 reads no accounts, creates no policy/state and makes no network requests.
 `checksum_matches` checks packaged integrity, not independent certification.
+
+## Install from the NextEleven source marketplace
+
+With Claude Code 2.1.275 or later, run inside Claude Code:
+
+```text
+/plugin install deadbolt --marketplace seanebones-lang/deadbolt-claude-plugin
+```
+
+This adds our source marketplace and installs the plugin. It does not represent
+an Anthropic directory endorsement. Review the install prompt before enabling.
+For older clients, register the marketplace first and install its entry:
+
+```sh
+claude plugin marketplace add seanebones-lang/deadbolt-claude-plugin
+claude plugin install deadbolt@nexteleven-deadbolt
+```
+
+Leave the optional `operator_config` blank for read-only setup. Current Claude
+Code prompts for this value; older clients without plugin configuration should
+use the separately documented ordinary MCP editor helper instead.
 
 ## Load a reviewed local copy
 
 ```sh
 git clone https://github.com/seanebones-lang/deadbolt-claude-plugin.git
-claude plugin validate --strict ./deadbolt-claude-plugin
+claude plugin validate --strict ./deadbolt-claude-plugin/.claude-plugin/plugin.json
 claude --plugin-dir ./deadbolt-claude-plugin
 ```
 
@@ -89,7 +120,8 @@ reporting. Local evidence is operator-writable.
 
 - `BUNDLE-SOURCE.json` pins the archive URL and SHA-256. `bundle/` contains its
   exact members, provenance, engine source references, licenses and dependency
-  notices. `server/entry.cjs` only adapts Claude's optional configuration value.
+  notices. `server/entry.cjs` adapts Claude's optional configuration value and
+  adds display titles to the two setup tools; it does not change engine policy.
 - Run `python3 tests/acceptance.py` (use `python` on Windows). It verifies every
   release member and exercises the exported plugin command with disposable
   effects. No real accounts, model calls or messages are used.

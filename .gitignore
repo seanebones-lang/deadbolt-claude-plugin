@@ -4,3 +4,4 @@ acceptance-report.json
 *.db
 *.jsonl
 .env*
+client-install-report.json

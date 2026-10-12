@@ -1,0 +1,16 @@
+{
+  "name": "nexteleven-deadbolt",
+  "owner": {
+    "name": "NextEleven LLC",
+    "email": "nextelevenstudios@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "deadbolt",
+      "source": "./",
+      "description": "Local read-only setup and explicit operator-owned MCP tool-call gating.",
+      "version": "1.0.0"
+    }
+  ],
+  "description": "NextEleven source marketplace for the local DeadBolt permission gate."
+}

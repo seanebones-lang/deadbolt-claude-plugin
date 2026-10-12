@@ -10,6 +10,17 @@ if (process.argv.length !== 2) {
 } else {
   const value = process.env.DEADBOLT_OPERATOR_CONFIG || '';
   const config = value === '${user_config.operator_config}' ? '' : value;
+  // Directory-facing display metadata only. Released files and permission
+  // enforcement stay unchanged; the setup server uses this same object array.
+  const setup = require('../bundle/server/setup.cjs');
+  const titles = {
+    deadbolt_get_integration_guide: 'DeadBolt integration guide',
+    deadbolt_check_bundle: 'Verify the local DeadBolt bundle',
+  };
+  for (const tool of setup.definitions) {
+    tool.title = titles[tool.name];
+    tool.annotations = { ...tool.annotations, title: tool.title };
+  }
   const entry = path.resolve(__dirname, '../bundle/server/launcher.cjs');
   process.argv = [process.argv[0], entry, config];
   require(entry);
