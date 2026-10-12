@@ -37,7 +37,7 @@ def verify(public=False):
         assert len(items) == 1
         item = items[0]
         assert item['id'] == 'deadbolt@nexteleven-deadbolt'
-        assert item['version'] == '1.0.0' and item['enabled']
+        assert item['version'] == json.loads((ROOT / '.claude-plugin/plugin.json').read_text())['version'] and item['enabled']
         assert list(item['mcpServers']) == ['deadbolt']
         health = run('mcp', 'list')
         assert 'plugin:deadbolt:deadbolt' in health and 'Connected' in health, health

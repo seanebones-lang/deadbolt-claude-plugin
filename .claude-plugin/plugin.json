@@ -1,7 +1,7 @@
 {
   "name": "deadbolt",
   "displayName": "DeadBolt",
-  "version": "1.0.0",
+  "version": "2.0.0-rc.2",
   "description": "Read-only local setup and bundle verification. Explicit private operator configuration enables a gate for routed downstream MCP tool calls in Claude Code; this is not an agent or OS sandbox.",
   "author": {
     "name": "NextEleven LLC",
