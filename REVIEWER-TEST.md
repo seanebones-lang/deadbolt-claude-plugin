@@ -41,3 +41,32 @@ acceptance gate. The separate MCPB GUI receipts are not Claude Code plugin evide
 Report the plugin commit, bundle hash, host, Node/Python and Claude version,
 commands and any failed report item. Keep private configuration, bearer tokens
 and unrelated account data out of reports. Preserve all licenses and provenance.
+
+## Recorded RC2 model evaluation
+
+See [the model receipt](evidence/claude-code-model-rc2-2026-10-12.json) for the
+source and artifact pins, host, scoped tool permissions and observed effects.
+The session-loaded `--plugin-dir` route was exercised with actual model tool
+calls. Model explanations were checked against returned denial text and dummy
+marker counts. The configured runs used a separately provisioned supervisor. Later control
+and outage cases used a 300-second operator idle TTL; the heartbeat-stop case
+used the default 60-second idle TTL. The fixed-deadline case used a real
+75-second bound. No stored expiry timestamp was edited and no deadline was
+extended.
+
+For a fresh reviewer run, select a distinct private operator configuration
+filename as well as a fresh identity, reconnect, and confirm the downstream
+tool list before invoking the model. Keep operator credentials outside the
+model process. Use only dummy tools and approve those tools explicitly in the
+client. An unavailable tool, failed connection or text that looks like a tool
+call is not a successful invocation.
+
+Pause, resume, clipping and kill must be tested on an already connected MCP
+process: startup while paused, killed or expired can stop before downstream
+initialization. A refusal to initialize is a separate result, not evidence
+that a model received a tool denial. Preserve failed attempts in the private
+coverage record and report only verified tool-call/effect pairs.
+
+This receipt does not close independent retesting, public-marketplace model
+installation, graphical-client testing or directory review. Those boundaries
+remain explicit even when local model calls pass.

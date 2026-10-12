@@ -70,7 +70,8 @@ are unverified or unsupported here. A host path may not exist inside a session V
 ## Configure one trusted downstream server
 
 1. Create a private operator-owned state directory outside agent-editable workspaces.
-2. Copy `bundle/operator-config.example.json` there. Version 2 requires absolute
+2. Copy `bundle/operator-config.example.json` to a distinct file for each run,
+   such as `run-001.json`. Version 2 requires absolute
    paths, a fresh identity, explicit tools, a future integer Unix-seconds
    `hard_deadline_at`, and an explicit `renewal_mode`. The zero deadline is an
    invalid placeholder. Empty `offline_tools` grants no exceptions.
@@ -135,12 +136,24 @@ checks against the client-selected copy. Manifest validation alone is not enough
 See [REVIEWER-TEST.md](REVIEWER-TEST.md) for a short reviewer runbook and
 [REVIEW-NOTES.md](REVIEW-NOTES.md) for inspectable source/provenance references.
 CLI/protocol checks do not establish model-mediated Claude Code acceptance.
-Tests in other graphical clients using the separate bundle are different evidence.
+The [RC2 model receipt](evidence/claude-code-model-rc2-2026-10-12.json) records
+separately checked model calls through the session-loaded plugin on macOS ARM64.
+It is NextEleven-operated evidence for the `--plugin-dir` route. Marketplace
+installation with a model, other hosts and graphical clients are separate checks.
 
 If startup fails, validate the configuration version, absolute paths, tool lists,
 future fixed deadline and live identity with the operator CLI. Diagnostics avoid
 printing private paths, arguments and credentials. A missing or unsafe store fails
 closed. Changing a deadline or mode of an existing run is refused.
+
+When starting a genuinely new run, use a new private configuration filename,
+select its absolute path in `operator_config`, and reconnect the MCP server.
+During the Claude Code 2.1.296 model test, reusing a configuration pathname after
+a failed connection left the plugin unavailable; a new pathname connected to the
+fresh identity. The cause of that client behavior has not been established.
+Check `/mcp` and the actual exposed tools before treating the new run as ready.
+Retain the old run and its evidence; changing configuration never authorizes
+reviving a killed or expired identity.
 
 End a `--plugin-dir` session to unload a local copy, or uninstall with Claude's
 plugin manager. Operator state is retained at the paths you selected; back it up
