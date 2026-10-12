@@ -3,56 +3,57 @@
 **Give agents tools. Keep control.** A free Apache-2.0 local MCP plugin from
 [NextEleven](https://www.nexteleven.dev/deadbolt).
 
-This plugin includes the exact released **MCP bundle 1.1.0**, containing stable
-**engine 1.0.3**. Plugin version **1.0.0** is a separate packaging version.
-It needs Node.js 20+ on PATH. Use current Claude Code; directory manifest fields
-validate without warnings on Claude Code 2.1.281+ (CI pins 2.1.296). macOS Apple Silicon/Intel, Linux x64 with glibc,
-and Windows x64 are included. It requires no Rust build, API key or hosted gate.
+Plugin **2.0.0-rc.2** includes the exact published **MCP bundle 2.0.0-rc.2** and
+**engine 2.0.0-rc.2**. This is a developer-evaluation prerelease, replacing the
+older plugin 1.0.0 candidate that carried engine 1.0.3. Plugin, bundle and engine
+versions are separate artifacts even when their version strings match.
+Stable promotion awaits independent artifact-pinned retesting.
 
-## Start with read-only setup
+Node.js 20+ on PATH is required. Use current Claude Code; CI validates the official
+CLI at 2.1.296. Included native targets: macOS Apple Silicon and Intel,
+Linux x64 with glibc, and Windows x64. No Rust build, API key or hosted gate is needed.
+No engine is downloaded during plugin installation or startup.
 
-Leave `DEADBOLT_OPERATOR_CONFIG` blank. Claude Code discovers:
+## Read-only setup first
 
-- `deadbolt_get_integration_guide`: local setup instructions for stdio, Rust,
-  HTTP or Claude Desktop.
-- `deadbolt_check_bundle`: hashes this host's packaged engine and reports the
-  packaging versions, compatibility and scope.
+Leave the optional `operator_config` blank. Claude discovers exactly two tools:
 
-Try these requests in a Claude Code session with the setup plugin enabled:
+- `deadbolt_get_integration_guide`: local instructions for stdio, Rust, HTTP or
+  Claude Desktop; does not save configuration or grant permission.
+- `deadbolt_check_bundle`: reads this host's packaged engine and provenance,
+  calculates SHA-256 and reports compatibility and integrity. Does not execute
+  the engine, inspect private operator state or test security.
 
-1. “Verify the local DeadBolt bundle and tell me whether protection is active.”
-2. “Get the DeadBolt stdio integration guide and explain what is outside its boundary.”
-3. “Show the DeadBolt guide for embedding the Rust crate in an application.”
+Try: “Verify the DeadBolt bundle and tell me whether protection is active.” Then:
+“Get the stdio integration guide and explain its boundaries.”
 
-These requests use read-only setup tools. They do not configure a server or grant
-an action. The acceptance suite calls both tools and all four guide routes.
+Setup creates no operator state, starts no downstream server and makes no network
+requests. `active_protection` is **false**. Matching a packaged checksum checks
+corruption, not independent certification or directory acceptance.
 
-**Setup mode provides no active protection.** It starts no downstream server,
-reads no accounts, creates no policy/state and makes no network requests.
-`checksum_matches` checks packaged integrity, not independent certification.
+## Install the source marketplace
 
-## Install from the NextEleven source marketplace
-
-With Claude Code 2.1.275 or later, run inside Claude Code:
+In Claude Code 2.1.275 or later:
 
 ```text
 /plugin install deadbolt --marketplace seanebones-lang/deadbolt-claude-plugin
 ```
 
-This adds our source marketplace and installs the plugin. It does not represent
-an Anthropic directory endorsement. Review the install prompt before enabling.
-For older clients, register the marketplace first and install its entry:
+Alternatively:
 
 ```sh
 claude plugin marketplace add seanebones-lang/deadbolt-claude-plugin
 claude plugin install deadbolt@nexteleven-deadbolt
 ```
 
-Leave the optional `operator_config` blank for read-only setup. Current Claude
-Code prompts for this value; older clients without plugin configuration should
-use the separately documented ordinary MCP editor helper instead.
+Review the local-code trust prompt before enabling. This source marketplace is
+not an Anthropic endorsement. Existing installs should use the client's plugin
+update controls and verify the reported bundle and engine version afterward.
+Operator state is stored separately and must be backed up before upgrading.
+Do not use a killed or expired identity as a new run, and do not downgrade a
+store expecting newer guarantees to an engine that ignores them.
 
-## Load a reviewed local copy
+For a reviewed local candidate:
 
 ```sh
 git clone https://github.com/seanebones-lang/deadbolt-claude-plugin.git
@@ -60,77 +61,96 @@ claude plugin validate --strict ./deadbolt-claude-plugin/.claude-plugin/plugin.j
 claude --plugin-dir ./deadbolt-claude-plugin
 ```
 
-In that Claude Code session, inspect `/mcp` for the `deadbolt` connection.
-This loads local code with your user's privileges; review it before enabling.
-Directory publication requires Anthropic review. A public repository does not
-establish directory acceptance. The directory does not accept standalone MCPB
-listings; this plugin declares a local command and carries the verified bundle
-files directly, including its native executables for reviewer inspection.
+Inspect `/mcp` for `deadbolt`. Its local process runs with your user's privileges.
+The directory submission targets **Claude Code only**. This plugin does not add
+local commands to ordinary Claude web/mobile/Desktop chat. The separate MCPB can
+be installed directly in Claude Desktop. Cowork, Linux ARM64 and cloud runtimes
+are unverified or unsupported here. A host path may not exist inside a session VM.
 
-**Surface support:** this package targets Claude Code on the four hosts above.
-Ordinary Claude web/mobile/Desktop chat ignores local MCP commands and gains no
-protection from this plugin. Local Cowork can load local commands, but its runtime
-must have Node.js 20+ and a packaged OS/architecture. Cowork integration is not
-validated here; Linux ARM64 and cloud Cowork are not supported by this bundle.
-Do not assume a configuration path on the host is accessible inside a session VM.
+## Configure one trusted downstream server
 
-## Gate one trusted server
+1. Create a private operator-owned state directory outside agent-editable workspaces.
+2. Copy `bundle/operator-config.example.json` there. Version 2 requires absolute
+   paths, a fresh identity, explicit tools, a future integer Unix-seconds
+   `hard_deadline_at`, and an explicit `renewal_mode`. The zero deadline is an
+   invalid placeholder. Empty `offline_tools` grants no exceptions.
+3. Select `supervisor` when an external trusted supervisor controls liveness.
+   Immediately provision and start renewal separately, before the default
+   60-second idle TTL expires. The plugin never provisions or receives a renewal
+   credential. Follow the [supervision guide](https://github.com/seanebones-lang/deadbolt/blob/main/docs/SUPERVISION.md).
+   `activity` is an explicit alternative: live admission renews idle TTL, while
+   the fixed deadline never moves. The bundled example selects this alternative
+   deliberately; it is not supervisor operation.
+4. Set the plugin's `operator_config` to the private absolute JSON path and
+   restart its MCP connection. Valid configuration replaces setup tools with
+   the downstream tools. Invalid or expired configuration stops before downstream
+   startup; it never falls back to unprotected setup or silently revives a run.
+5. Verify disposable allowed and denied effects before connecting accounts.
+   Keep the packaged native CLI's policy, approvals, pause, clip, resume and kill
+   with the operator. Client permission and DeadBolt admission are separate.
 
-1. Create a private operator-owned directory outside the agent's workspace.
-2. Copy `bundle/operator-config.example.json` there. Replace every placeholder
-   with absolute paths, a fresh run ID, an explicit tool allow-list, destinations,
-   irreversible-tool classification and your spend cap. Never commit that file.
-3. In Claude Code's plugin configuration, set `operator_config` to the absolute
-   private JSON path. The plugin maps this value to `DEADBOLT_OPERATOR_CONFIG`
-   for its local launcher. Restart its MCP connection. When configuration is valid,
-   setup tools are replaced by the trusted downstream server's tools. Invalid
-   supplied configuration refuses startup; it does not fall back to setup.
-4. Verify an allowed dummy effect and a denied dummy effect before using accounts.
-   Follow the [editor evaluation](https://seanebones-lang.github.io/deadbolt/editor-tutorial.html).
-5. Keep policy, approval, pause, clip, resume and kill in the operator's local CLI,
-   outside model tools. The signed native CLI is included in `bundle/native/`.
+Fresh standalone engine setup defaults to supervision; this launcher requires
+an explicit mode. A supervisor can renew idle TTL while the run is still live,
+but never past its fixed deadline. When idle TTL or deadline expires, create a
+fresh operator-issued identity for a genuinely new run. Resume and restart cannot
+resurrect an expired or killed identity. Do not delete state to hide a denial.
 
-If your Claude Code version does not provide plugin configuration, use the existing
-[editor helper](https://seanebones-lang.github.io/deadbolt/editors.html) to install
-and configure the verified release as a normal local MCP connection. Do not
-modify plugin source to store a private path or a credential. Do not run both
-connections against the same run identity.
+This launcher uses **legacy one-shot tool approvals** for classified irreversible
+calls. It removes inherited `DEADBOLT_*` variables, including action grant-file
+references, before launching its proxy. It does not deliver exact-action grants.
+For reviewed argument-bound approvals use the engine's documented Rust, Python
+or explicitly configured raw-proxy integration. Do not claim that a broad tool
+grant approves the exact arguments of a later call.
 
-The stable engine has a 60-second sliding lease. Silence expires it. Use a fresh
-operator-assigned identity for a new run, and never reuse a killed identity or
-share one across concurrent sessions. Stable classified irreversible tools use
-a broad one-shot grant; the **engine 1.1.0-rc.1** exact-action features are not in
-this plugin. Choose that engine separately when those features are required.
+## Understand the boundary
 
-## The execution boundary
+Only routed MCP `tools/call` admissions are gated. Startup has a separate liveness
+check; arbitrary OS access, other MCP methods, other tools/servers and already
+running work are outside this gate. The downstream remains trusted and inherits
+its normal user environment. Use OS isolation and executor-owned cancellation
+when those are required.
 
-Only routed `tools/call` requests are gated. Downstream startup, other MCP
-methods, arbitrary OS/network access and already-running tool bodies are outside
-that boundary. The downstream process stays trusted and runs with your user's
-privileges. It can access the environment normally available to that process;
-connect only reviewed servers. Client consent and DeadBolt approval are separate.
-Unprotected Claude tools and other installed MCP servers are not covered.
+With destination policy set, every routed tool must declare an allowed destination
+unless the operator explicitly excepted that tool as offline. A declared foreign
+destination remains denied even for an offline-excepted tool. These are trusted
+policy declarations, **not OS egress enforcement**. Spend caps use trusted reported
+usage. Local state and evidence are operator-writable; private-path and malformed
+state checks do not prevent valid edits by the same user.
 
-This is a permission gate, not an OS sandbox or a compliance certification.
-Open policy is the engine default; this launcher's configured mode requires an
-explicit nonempty tool allow-list. Reported spend depends on trusted caller
-reporting. Local evidence is operator-writable.
+RC2 returns tool denials as `isError: true` with stable reason/retry metadata.
+The model can distinguish `paused`, `killed`, `lease_expired`,
+`deadline_exceeded`, `purpose_exceeded` and `store_unavailable` without receiving
+operator credentials or private policy. A kill prevents new admissions; it does
+not automatically cancel an in-flight tool body.
 
-## Inspect, reproduce and remove
+## Reproduce, troubleshoot and remove
 
-- `BUNDLE-SOURCE.json` pins the archive URL and SHA-256. `bundle/` contains its
-  exact members, provenance, engine source references, licenses and dependency
-  notices. `server/entry.cjs` adapts Claude's optional configuration value and
-  adds display titles to the two setup tools; it does not change engine policy.
-- Run `python3 tests/acceptance.py` (use `python` on Windows). It verifies every
-  release member and exercises the exported plugin command with disposable
-  effects. No real accounts, model calls or messages are used.
-- End a `--plugin-dir` session to unload the development copy; remove an installed
-  plugin through Claude Code’s plugin manager. Operator state lives in the private paths you selected and is kept.
-  To delete that state, make a separate deliberate backup/removal decision.
-- [Source and issues](https://github.com/seanebones-lang/deadbolt) ·
-  [Trust guide](https://github.com/seanebones-lang/deadbolt/blob/v1.0.3/docs/TRUST.md) ·
-  [Captioned walkthrough](https://www.nexteleven.dev/deadbolt#watch)
+Run `python3 tests/acceptance.py` (`python` on Windows). It downloads the pinned
+public archive, checks every vendored member, exercises the exported plugin
+command and verifies real disposable marker effects. It uses no model or account.
+Run `python3 tests/client_install.py` to install/list/connect/uninstall through
+the official Claude CLI in temporary storage and repeat the exported-command
+checks against the client-selected copy. Manifest validation alone is not enough.
+
+See [REVIEWER-TEST.md](REVIEWER-TEST.md) for a short reviewer runbook and
+[REVIEW-NOTES.md](REVIEW-NOTES.md) for inspectable source/provenance references.
+CLI/protocol checks do not establish model-mediated Claude Code acceptance.
+Tests in other graphical clients using the separate bundle are different evidence.
+
+If startup fails, validate the configuration version, absolute paths, tool lists,
+future fixed deadline and live identity with the operator CLI. Diagnostics avoid
+printing private paths, arguments and credentials. A missing or unsafe store fails
+closed. Changing a deadline or mode of an existing run is refused.
+
+End a `--plugin-dir` session to unload a local copy, or uninstall with Claude's
+plugin manager. Operator state is retained at the paths you selected; back it up
+or remove it deliberately as a separate action. Do not commit private config,
+credentials or state to this repository.
+
+[Engine source and issues](https://github.com/seanebones-lang/deadbolt) ·
+[Installation and migration](https://github.com/seanebones-lang/deadbolt/blob/main/docs/INSTALL.md) ·
+[Trust boundaries](https://github.com/seanebones-lang/deadbolt/blob/main/docs/TRUST.md) ·
+[Captioned walkthrough](https://www.nexteleven.dev/deadbolt#watch)
 
 ## Privacy Policy
 
@@ -159,10 +179,3 @@ credentials or local operator records to the plugin repository.
 Support and privacy questions: **nextelevenstudios@gmail.com**.
 This developer tool is intended for adult operators. No paid hosting is added;
 Claude subscriptions and downstream services are separate.
-
-## Validation coverage
-
-`tests/acceptance.py` checks the exported command with real disposable marker
-effects and no model/provider calls. Its report distinguishes protocol coverage
-from client UI and model-mediated coverage. A local CLI manifest validation does
-not replace the directory's additional checks or reviewer decision.

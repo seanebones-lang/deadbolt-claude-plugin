@@ -9,7 +9,7 @@
       "name": "deadbolt",
       "source": "./",
       "description": "Local read-only setup and explicit operator-owned MCP tool-call gating.",
-      "version": "1.0.0"
+      "version": "2.0.0-rc.2"
     }
   ],
   "description": "NextEleven source marketplace for the local DeadBolt permission gate."
