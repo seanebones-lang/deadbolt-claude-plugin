@@ -3,11 +3,10 @@
 **Give agents tools. Keep control.** A free Apache-2.0 local MCP plugin from
 [NextEleven](https://www.nexteleven.dev/deadbolt).
 
-Plugin **2.0.0-rc.2** includes the exact published **MCP bundle 2.0.0-rc.2** and
-**engine 2.0.0-rc.2**. This is a developer-evaluation prerelease, replacing the
-older plugin 1.0.0 candidate that carried engine 1.0.3. Plugin, bundle and engine
-versions are separate artifacts even when their version strings match.
-Stable promotion awaits independent artifact-pinned retesting.
+Plugin **2.0.0** includes MCP bundle **2.0.0** and the stable engine **2.0.0**.
+Every vendored member is pinned to the separately published bundle. Plugin,
+bundle and engine remain separate artifacts even when versions match.
+This source update does not establish official marketplace acceptance.
 
 Node.js 20+ on PATH is required. Use current Claude Code; CI validates the official
 CLI at 2.1.296. Included native targets: macOS Apple Silicon and Intel,
@@ -118,7 +117,7 @@ policy declarations, **not OS egress enforcement**. Spend caps use trusted repor
 usage. Local state and evidence are operator-writable; private-path and malformed
 state checks do not prevent valid edits by the same user.
 
-RC2 returns tool denials as `isError: true` with stable reason/retry metadata.
+Version 2 returns tool denials as `isError: true` with stable reason/retry metadata.
 The model can distinguish `paused`, `killed`, `lease_expired`,
 `deadline_exceeded`, `purpose_exceeded` and `store_unavailable` without receiving
 operator credentials or private policy. A kill prevents new admissions; it does

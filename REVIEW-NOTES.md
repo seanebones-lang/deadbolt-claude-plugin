@@ -1,6 +1,6 @@
 # Directory reviewer notes
 
-Candidate plugin 2.0.0-rc.2 carries the exact published MCPB 2.0.0-rc.2 members.
+Stable plugin 2.0.0 carries the exact MCPB 2.0.0 members.
 `BUNDLE-SOURCE.json` pins the public archive and SHA-256. Every member is compared
 byte-for-byte in `tests/acceptance.py`. Native executable/source references,
 build revisions, signatures, licenses and notices are in the bundled provenance.
@@ -26,7 +26,7 @@ files and private operator state, with no real accounts or model calls. The
 isolated official CLI test removes its temporary install/configuration on exit.
 `REVIEWER-TEST.md` gives the reproduction steps and expected results.
 
-This is a prerelease evaluation candidate. Independent artifact-pinned developer
-retesting and model-mediated Claude Code acceptance remain distinct from these
-protocol tests. The directory listing targets only Claude Code; neither Cowork
+The engine feature set is frozen. Historical RC2 model evidence remains
+version-specific. Installed stable protocol checks and model-mediated Claude Code
+acceptance remain distinct facts. The directory listing targets only Claude Code; neither Cowork
 nor ordinary Claude web/mobile/Desktop chat is claimed through this plugin.
