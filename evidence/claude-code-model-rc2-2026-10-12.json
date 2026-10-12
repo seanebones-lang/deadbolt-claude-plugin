@@ -14,11 +14,14 @@
     "os": "macOS",
     "architecture": "arm64",
     "claude_code": "2.1.296",
-    "model": "claude-sonnet-5-5"
+    "model": "claude-sonnet-5-5",
+    "macOS_version": "26.6.2",
+    "node": "v22.22.3",
+    "fixture_python": "Python 3.9.6"
   },
   "installation_route": "Session-loaded source plugin via --plugin-dir; published source tree verified equal to the tested tree.",
   "tool_permissions": "Built-in tools disabled; only two setup tools and four disposable marker probes explicitly allowed; all other tool permissions refused.",
-  "operator_configuration": "Private per-run config; fresh finite supervised identities; no real accounts or documents; operator secrets excluded from plugin and model environments.",
+  "operator_configuration": "Private per-run config; fresh finite supervised identities; no real downstream accounts or documents; operator secrets excluded from plugin and model environments.",
   "timing": {
     "initial_run_idle_ttl_secs": 60,
     "later_runs_operator_idle_ttl_secs": 300,
@@ -112,5 +115,6 @@
     "cause": "Not established",
     "workaround": "Use a distinct private operator configuration file per new run and verify actual MCP connection and tools."
   },
-  "failed_attempts": "Initial --strict-mcp-config excluded plugin tools; paused/new-run startup and reused-path connection failures were recorded privately and excluded from successful call counts."
+  "failed_attempts": "Initial --strict-mcp-config excluded plugin tools; paused/new-run startup and reused-path connection failures were recorded privately and excluded from successful call counts.",
+  "model_authentication": "Existing Claude Code authentication; no new model credential created or copied."
 }
