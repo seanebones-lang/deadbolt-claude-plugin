@@ -40,6 +40,10 @@ def verify():
     assert entry['args'] == ['${CLAUDE_PLUGIN_ROOT}/server/entry.cjs']
     assert entry['env'] == {'DEADBOLT_OPERATOR_CONFIG': '${user_config.operator_config}'}
     assert entry['type'] == 'stdio'
+    market = json.loads((ROOT / '.claude-plugin/marketplace.json').read_text())
+    assert market['plugins'][0]['name'] == manifest['name']
+    assert market['plugins'][0]['version'] == manifest['version']
+    assert market['plugins'][0]['source'] == './'
     assert not (ROOT / 'hooks').exists(), 'No automatic workspace actions'
     command = [shutil.which(entry['command']), entry['args'][0].replace('${CLAUDE_PLUGIN_ROOT}', str(ROOT))]
     assert command[0]
@@ -96,6 +100,12 @@ process.stdout.write(JSON.stringify({jsonrpc:'2.0',id:r.id,result})+'\\n');});
                 assert rpc(proc, 'initialize')['result']['serverInfo']['name'] == 'deadbolt-setup'
                 tools = rpc(proc, 'tools/list')['result']['tools']
                 assert len(tools) == 2 and all(t['annotations']['readOnlyHint'] for t in tools)
+                assert all(t['title'] and t['annotations']['title'] == t['title'] for t in tools)
+                if label == 'absent':
+                    for route in ['claude_desktop', 'stdio_client', 'rust', 'http']:
+                        guide = rpc(proc, 'tools/call', {'name': 'deadbolt_get_integration_guide', 'arguments': {'route': route}})['result']['structuredContent']
+                        assert guide['route'] == route and guide['steps'] and guide['boundary']
+                    passed('all_four_read_only_integration_routes_return_guidance')
                 result = rpc(proc, 'tools/call', {'name': 'deadbolt_check_bundle', 'arguments': {}})['result']['structuredContent']
                 assert result['checksum_matches'] and result['active_protection'] is False
                 assert 'error' in rpc(proc, 'tools/call', {'name': 'kill', 'arguments': {}})
