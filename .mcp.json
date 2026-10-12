@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "deadbolt": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/server/entry.cjs"
+      ],
+      "env": {
+        "DEADBOLT_OPERATOR_CONFIG": "${user_config.operator_config}"
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "deadbolt",
+  "displayName": "DeadBolt",
+  "version": "1.0.0",
+  "description": "Read-only local setup and bundle verification. Explicit private operator configuration enables a gate for routed downstream MCP tool calls in Claude Code; this is not an agent or OS sandbox.",
+  "author": {
+    "name": "NextEleven LLC",
+    "email": "nextelevenstudios@gmail.com",
+    "url": "https://www.nexteleven.dev"
+  },
+  "homepage": "https://www.nexteleven.dev/deadbolt",
+  "repository": "https://github.com/seanebones-lang/deadbolt-claude-plugin",
+  "license": "Apache-2.0",
+  "keywords": [
+    "agents",
+    "mcp",
+    "permissions",
+    "local"
+  ],
+  "userConfig": {
+    "operator_config": {
+      "type": "string",
+      "title": "Private operator configuration path",
+      "description": "Leave blank for read-only setup, with no active protection. Supply an absolute private JSON path to gate a trusted local downstream server. Invalid supplied paths stop startup.",
+      "required": false,
+      "default": ""
+    }
+  }
+}
