@@ -18,12 +18,14 @@ def verify(public=False):
                if not k.upper().startswith(('ANTHROPIC_', 'CLAUDE_', 'DEADBOLT_'))}
         env.update(CLAUDE_CONFIG_DIR=temporary,
                    CLAUDE_CODE_PLUGIN_PREFER_HTTPS='1')
+        workspace = Path(temporary) / 'workspace'
+        workspace.mkdir()
         cli = [shutil.which('npx'), '--yes', '@anthropic-ai/claude-code@' + CLI_VERSION]
         assert cli[0], 'Node/npm required for official CLI validation'
 
         def run(*args):
             result = subprocess.run(cli + list(args), env=env, text=True,
-                                    capture_output=True, timeout=120)
+                                    cwd=workspace, capture_output=True, timeout=120)
             assert result.returncode == 0, result.stderr or result.stdout
             return result.stdout
 
@@ -37,6 +39,9 @@ def verify(public=False):
         assert item['id'] == 'deadbolt@nexteleven-deadbolt'
         assert item['version'] == '1.0.0' and item['enabled']
         assert list(item['mcpServers']) == ['deadbolt']
+        health = run('mcp', 'list')
+        assert 'plugin:deadbolt:deadbolt' in health and 'Connected' in health, health
+        assert 'Failed' not in health, health
         folder = Path(item.get('readFromFolder') or item['installPath'])
         if public:
             assert folder.resolve().is_relative_to(Path(temporary).resolve())
@@ -55,7 +60,8 @@ def verify(public=False):
         run('plugin', 'uninstall', item['id'])
         assert json.loads(run('plugin', 'list', '--json')) == []
         return {'passed': True, 'official_cli_version': CLI_VERSION,
-                'source': source, 'scope': 'isolated CLI install/list/uninstall and exported-command effects; no model-mediated invocation',
+                'source': source, 'scope': 'isolated CLI install/list/MCP connection/uninstall and exported-command effects; no model-mediated invocation',
+                'client_mcp_connected': True,
                 'plugin': item['id'], 'effect_cases': len(effects['checks']),
                 'temporary_storage_removed_on_exit': True}
 
