@@ -3,7 +3,7 @@
 **Give agents tools. Keep control.** A free Apache-2.0 local MCP plugin from
 [NextEleven](https://www.nexteleven.dev/deadbolt).
 
-Plugin **2.0.0** includes MCP bundle **2.0.0** and the stable engine **2.0.0**.
+Plugin **2.0.1** includes MCP bundle **2.0.1** and the stable engine **2.0.1**.
 Every vendored member is pinned to the separately published bundle. Plugin,
 bundle and engine remain separate artifacts even when versions match.
 This source update does not establish official marketplace acceptance.
@@ -48,6 +48,11 @@ claude plugin install deadbolt@nexteleven-deadbolt
 Review the local-code trust prompt before enabling. This source marketplace is
 not an Anthropic endorsement. Existing installs should use the client's plugin
 update controls and verify the reported bundle and engine version afterward.
+In a separate read-only setup connection, verify `deadbolt_check_bundle` reports
+engine and bundle **2.0.1** after the update;
+an older result means the client is still loading an older plugin copy. Installing
+the standalone CLI does not update this plugin's packaged engine. For a local
+checkout, update that checkout and reload its MCP connection.
 Operator state is stored separately and must be backed up before upgrading.
 Do not use a killed or expired identity as a new run, and do not downgrade a
 store expecting newer guarantees to an engine that ignores them.
@@ -183,8 +188,9 @@ deliberately choose to do so.
 DeadBolt does not send data to NextEleven. Claude's model/service data handling
 and the downstream server's network activity and retention follow their own
 policies. The trusted downstream process inherits its normal local environment
-and user privileges; this plugin does not sanitize that environment or sandbox
-its network access. Review it before connecting accounts or personal data.
+and user privileges. DeadBolt removes its credentials and state-location environment
+variables before starting the downstream server; other application variables remain
+inherited. It does not sandbox network access. Review it before connecting accounts or personal data.
 No services are connected by default. Do not commit private configuration,
 credentials or local operator records to the plugin repository.
 

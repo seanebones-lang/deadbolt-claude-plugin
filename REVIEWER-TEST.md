@@ -28,7 +28,7 @@ credentials or call a model. Temporary storage is removed on exit.
 For a manual Claude Code session, load a reviewed copy with
 `claude --plugin-dir /absolute/path/to/deadbolt-claude-plugin` and leave the
 optional configuration blank. Ask “Verify the DeadBolt bundle and tell me if
-protection is active.” Expected: engine/bundle 2.0.0-rc.2, checksum match,
+protection is active.” Expected: engine/bundle 2.0.1, checksum match,
 `active_protection: false`. Ask “Get the stdio integration guide.” Expected:
 placeholder configuration and explicit boundaries, with no server started.
 
