@@ -1,6 +1,6 @@
 # Directory reviewer notes
 
-Stable plugin 2.0.0 carries the exact MCPB 2.0.0 members.
+Stable plugin 2.0.1 carries the exact MCPB 2.0.1 members.
 `BUNDLE-SOURCE.json` pins the public archive and SHA-256. Every member is compared
 byte-for-byte in `tests/acceptance.py`. Native executable/source references,
 build revisions, signatures, licenses and notices are in the bundled provenance.
