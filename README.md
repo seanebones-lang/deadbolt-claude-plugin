@@ -3,7 +3,7 @@
 **Give agents tools. Keep control.** A free Apache-2.0 local MCP plugin from
 [NextEleven](https://www.nexteleven.dev/deadbolt).
 
-Plugin **2.0.1** includes MCP bundle **2.0.1** and the stable engine **2.0.1**.
+Plugin **2.0.2** includes MCP bundle **2.0.2** and the stable engine **2.0.2**.
 Every vendored member is pinned to the separately published bundle. Plugin,
 bundle and engine remain separate artifacts even when versions match.
 This source update does not establish official marketplace acceptance.
@@ -49,7 +49,7 @@ Review the local-code trust prompt before enabling. This source marketplace is
 not an Anthropic endorsement. Existing installs should use the client's plugin
 update controls and verify the reported bundle and engine version afterward.
 In a separate read-only setup connection, verify `deadbolt_check_bundle` reports
-engine and bundle **2.0.1** after the update;
+engine and bundle **2.0.2** after the update;
 an older result means the client is still loading an older plugin copy. Installing
 the standalone CLI does not update this plugin's packaged engine. For a local
 checkout, update that checkout and reload its MCP connection.
